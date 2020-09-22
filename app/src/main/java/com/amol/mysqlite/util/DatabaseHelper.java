@@ -65,9 +65,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String getVendorId() {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-//          SELECT TOP 1 City FROM Customers;
-//          SELECT City FROM Customers LIMIT 1;
         try {
+            /** Selecting top row, first column from table, which is vendor id*/
             Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + COLUMN_1 + " FROM " + TABLE_NAME + " LIMIT 1", null);
             cursor.moveToFirst();
             return cursor.getString(0);
@@ -92,7 +91,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (SQLiteConstraintException exception) {
             Log.d(TAG, "Trying to insert same product id:" + result);
         }
-
         return result == -1 ? false : true;
     }
 

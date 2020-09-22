@@ -1,11 +1,14 @@
 package com.amol.mysqlite;
 
+/**
+ * Created by amolmhatre on 9/22/20
+ */
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,8 +17,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.amol.mysqlite.util.DatabaseHelper;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         databaseHelper = new DatabaseHelper(this);
+        vendor_id = databaseHelper.getVendorId();
 
         etVendor_id = (EditText) findViewById(R.id.etVendor_id);
         etProduct_id = (EditText) findViewById(R.id.etProduct_id);
@@ -41,19 +43,6 @@ public class MainActivity extends AppCompatActivity {
         btnViewdata = (Button) findViewById(R.id.btnViewdata);
         btnDelete = (Button) findViewById(R.id.btnDelete);
         btnClearTable = (Button) findViewById(R.id.btnClearTable);
-
-//        etPrice.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View view, boolean b) {
-//                quantity = etQuantity.getText().toString();
-//                price = etPrice.getText().toString();
-//                int total = Integer.parseInt(quantity)*Integer.parseInt(price);
-//                etTotal.setText(total+"");
-//            }
-//        });
-
-        vendor_id = databaseHelper.getVendorId();
-        Log.d(TAG, "vendor_id initial:" + vendor_id);
 
 
         btnInsert.setOnClickListener(new View.OnClickListener() {
@@ -68,9 +57,8 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(MainActivity.this, "Insertion Failed", Toast.LENGTH_SHORT).show();
                     }
-
                 } else {
-                    showMessage(vendor_id, vendor_id_temp);
+                    switchVendorAlert(vendor_id, vendor_id_temp);
                 }
             }
         });
@@ -145,10 +133,9 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean clearTable() {
         return databaseHelper.deleteTable(etVendor_id.getText().toString());
-
     }
 
-    public void showMessage(final String Vendor1, final String Vendor2) {
+    public void switchVendorAlert(final String Vendor1, final String Vendor2) {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setIcon(R.drawable.bombill);
         alertDialog.setCancelable(true);
