@@ -3,6 +3,7 @@ package com.amol.mysqlite.util;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
@@ -60,6 +61,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = sqLiteDatabase.rawQuery("select * from " + TABLE_NAME, null);
         return cursor;
 
+    }
+
+    public String getVendorId() {
+        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+//          SELECT TOP 1 City FROM Customers;
+//          SELECT City FROM Customers LIMIT 1;
+        try {
+            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + COLUMN_1 + " FROM " + TABLE_NAME + " LIMIT 1", null);
+            cursor.moveToFirst();
+            return cursor.getString(0);
+        } catch (CursorIndexOutOfBoundsException exception) {
+            return "0";
+        }
     }
 
     public boolean insertData(String vendor_id, String product_id, String product_name, String product_quantity, String product_price, String product_total) {

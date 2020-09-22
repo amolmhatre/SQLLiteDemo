@@ -1,9 +1,13 @@
 package com.amol.mysqlite;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,12 +15,14 @@ import android.widget.Toast;
 
 import com.amol.mysqlite.util.DatabaseHelper;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static DatabaseHelper databaseHelper;
     private static EditText etVendor_id, etProduct_id, etProduct_Name, etQuantity, etPrice, etTotal;
     private static Button btnInsert, btnUpdate, btnViewdata, btnDelete, btnClearTable;
-    private static String vendor_id, quantity, price, total;
+    private static String vendor_id = "0", quantity, price, total;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +52,25 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
+        vendor_id = databaseHelper.getVendorId();
+        Log.d(TAG, "vendor_id initial:" + vendor_id);
+
+
         btnInsert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isInsterted = insertData();
-                if (isInsterted) {
-                    Toast.makeText(MainActivity.this, "Data is Inserted", Toast.LENGTH_SHORT).show();
+                String vendor_id_temp = etVendor_id.getText().toString();
+                Log.d(TAG, "vendor_id" + vendor_id + "," + vendor_id_temp);
+                if (vendor_id.equals(vendor_id_temp) || vendor_id == "0") {
+                    boolean isInsterted = insertData();
+                    if (isInsterted) {
+                        Toast.makeText(MainActivity.this, "Data is Inserted", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Insertion Failed", Toast.LENGTH_SHORT).show();
+                    }
+
                 } else {
-                    Toast.makeText(MainActivity.this, "Insertion Failed", Toast.LENGTH_SHORT).show();
+                    showMessage(vendor_id, vendor_id_temp);
                 }
             }
         });
@@ -131,4 +148,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void showMessage(final String Vendor1, final String Vendor2) {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setIcon(R.drawable.bombill);
+        alertDialog.setCancelable(true);
+        alertDialog.setTitle("Do you want to empty the cart?");
+        alertDialog.setMessage("Your cart contain products from vendor#" + Vendor1 +
+                ". Do you want to discard the selection and add products from vendor#" + Vendor2 + "?");
+        alertDialog.setPositiveButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        alertDialog.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                databaseHelper.deleteTable(Vendor1);
+                dialogInterface.dismiss();
+                vendor_id = Vendor2;
+            }
+        });
+        alertDialog.show();
+    }
 }
