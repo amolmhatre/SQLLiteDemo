@@ -60,6 +60,17 @@ public class MainActivity extends AppCompatActivity {
         linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
 
         /** Check if product_id exists and show/hide ADD button accordingly */
+        String product_id = "0";
+        if (databaseHelper.findProductID(product_id)) {
+            linearLayout.setVisibility(View.VISIBLE);
+            btnAddToCart.setVisibility(View.GONE);
+            tvShowQuantity.setText(databaseHelper.getQuantity(product_id));
+            tvResult.setText(product_id + " is found.");
+        } else {
+            linearLayout.setVisibility(View.GONE);
+            btnAddToCart.setVisibility(View.VISIBLE);
+            tvResult.setText(product_id + " is not found.");
+        }
 
         btnInsert.setOnClickListener(new View.OnClickListener() {
             @Override
