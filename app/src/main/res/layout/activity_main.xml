@@ -131,8 +131,8 @@
 
     <Button
         android:id="@+id/btnDelete"
-        android:layout_width="89dp"
-        android:layout_height="51dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="delete"
         app:layout_constraintStart_toStartOf="@+id/btnInsert"
@@ -145,6 +145,15 @@
         android:text="clear table"
         app:layout_constraintStart_toStartOf="@+id/btnUpdate"
         app:layout_constraintTop_toTopOf="@+id/btnDelete" />
+
+    <Button
+        android:id="@+id/btnCheckProduct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Check Pid"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintStart_toEndOf="@+id/btnClearTable"
+        app:layout_constraintTop_toTopOf="@+id/btnClearTable" />
 
     <Button
         android:id="@+id/btnTotalItems"
@@ -163,5 +172,62 @@
         android:layout_marginLeft="10dp"
         app:layout_constraintStart_toEndOf="@+id/btnTotalItems"
         app:layout_constraintTop_toTopOf="@+id/btnTotalItems" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/btnTotalPrice"
+        tools:layout_editor_absoluteX="20dp"
+        android:visibility="invisible">
+
+        <Button
+            android:id="@+id/btnAdd"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="+"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/tvShowQuantity"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="0" />
+
+        <Button
+            android:id="@+id/btnSubtract"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="-"
+            android:textSize="15dp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnAddToCart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="add"
+        android:textAllCaps="true"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Result"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

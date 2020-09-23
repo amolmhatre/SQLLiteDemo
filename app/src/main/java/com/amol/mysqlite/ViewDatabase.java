@@ -21,7 +21,6 @@ public class ViewDatabase extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_database);
         databaseHelper = new DatabaseHelper(this);
-
         tvTableData = (TextView) findViewById(R.id.tvTableData);
         viewTableData();
     }
