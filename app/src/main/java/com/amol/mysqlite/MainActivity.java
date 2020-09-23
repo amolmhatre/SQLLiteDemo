@@ -22,7 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static DatabaseHelper databaseHelper;
     private static EditText etVendor_id, etProduct_id, etProduct_Name, etQuantity, etPrice, etTotal;
-    private static Button btnInsert, btnUpdate, btnViewdata, btnDelete, btnClearTable;
+    private static Button btnInsert, btnUpdate, btnViewdata,
+            btnDelete, btnClearTable, btnTotalItems, btnTotalPrice;
     private static String vendor_id = "0", quantity, price, total;
 
     @Override
@@ -37,12 +38,13 @@ public class MainActivity extends AppCompatActivity {
         etProduct_Name = (EditText) findViewById(R.id.etProduct_Name);
         etQuantity = (EditText) findViewById(R.id.etQuantity);
         etPrice = (EditText) findViewById(R.id.etPrice);
-        etTotal = (EditText) findViewById(R.id.etTotal);
         btnInsert = (Button) findViewById(R.id.btnInsert);
         btnUpdate = (Button) findViewById(R.id.btnUpdate);
         btnViewdata = (Button) findViewById(R.id.btnViewdata);
         btnDelete = (Button) findViewById(R.id.btnDelete);
         btnClearTable = (Button) findViewById(R.id.btnClearTable);
+        btnTotalItems = (Button) findViewById(R.id.btnTotalItems);
+        btnTotalPrice = (Button) findViewById(R.id.btnTotalPrice);
 
 
         btnInsert.setOnClickListener(new View.OnClickListener() {
@@ -50,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String vendor_id_temp = etVendor_id.getText().toString();
                 Log.d(TAG, "vendor_id" + vendor_id + "," + vendor_id_temp);
-                if (vendor_id.equals(vendor_id_temp) || vendor_id == "0") {
+//                Toast.makeText(MainActivity.this, "vendor_id" + vendor_id + "," + vendor_id_temp, Toast.LENGTH_SHORT).show();
+                if (vendor_id.equals(vendor_id_temp) || vendor_id.equals("0")) {
                     boolean isInsterted = insertData();
                     if (isInsterted) {
                         Toast.makeText(MainActivity.this, "Data is Inserted", Toast.LENGTH_SHORT).show();
@@ -105,26 +108,48 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, ViewDatabase.class));
             }
         });
+
+        btnTotalItems.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String total = databaseHelper.getNumberOfItems();
+                Toast.makeText(MainActivity.this, "Total Items: " + total, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        btnTotalPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String total = databaseHelper.getTotalPrice();
+                Toast.makeText(MainActivity.this, "Grand Total: ₹" + total, Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
     public boolean insertData() {
+        int total = Integer.parseInt(etQuantity.getText().toString())
+                * Integer.parseInt(etPrice.getText().toString());
         return databaseHelper.insertData(
                 etVendor_id.getText().toString(),
                 etProduct_id.getText().toString(),
                 etProduct_Name.getText().toString(),
                 etQuantity.getText().toString(),
                 etPrice.getText().toString(),
-                etTotal.getText().toString());
+                total + "");
     }
 
     public boolean updateData() {
+        int total = Integer.parseInt(etQuantity.getText().toString())
+                * Integer.parseInt(etPrice.getText().toString());
         return databaseHelper.updateData(
                 etVendor_id.getText().toString(),
                 etProduct_id.getText().toString(),
                 etProduct_Name.getText().toString(),
                 etQuantity.getText().toString(),
                 etPrice.getText().toString(),
-                etTotal.getText().toString());
+                total + "");
     }
 
     public boolean deleteData() {

@@ -29,10 +29,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_5 = "product_price";
     public static final String COLUMN_6 = "product_total";
     public static final String COLUMN_7 = "id";
+    public static SQLiteDatabase sqLiteDatabase;
+    public static Cursor cursor;
 
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, 1);
+        sqLiteDatabase = this.getWritableDatabase();
     }
 
 
@@ -57,17 +60,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getData() {
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery("select * from " + TABLE_NAME, null);
+        cursor = sqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME, null);
         return cursor;
 
     }
 
     public String getVendorId() {
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         try {
             /** Selecting top row, first column from table, which is vendor id*/
-            Cursor cursor = sqLiteDatabase.rawQuery("SELECT " + COLUMN_1 + " FROM " + TABLE_NAME + " LIMIT 1", null);
+            cursor = sqLiteDatabase.rawQuery("SELECT " + COLUMN_1 + " FROM " + TABLE_NAME + " LIMIT 1", null);
             cursor.moveToFirst();
             return cursor.getString(0);
         } catch (CursorIndexOutOfBoundsException exception) {
@@ -75,8 +76,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public String getNumberOfItems() {
+        try {
+            /** simple count for number of rows */
+            cursor = sqLiteDatabase.rawQuery("SELECT COUNT(" + COLUMN_2 + ") FROM " + TABLE_NAME + " ;", null);
+            cursor.moveToFirst();
+            return cursor.getString(0);
+        } catch (CursorIndexOutOfBoundsException exception) {
+            return "0";
+        }
+    }
+
+    public boolean findProductID(String product_id) {
+        /** get 1 count for occurrence of product_id in column and pick top, which will be 0 or 1 */
+        cursor = sqLiteDatabase.rawQuery("SELECT COUNT(1) FROM " + TABLE_NAME + " WHERE " + COLUMN_2 + " = " + product_id + ";", null);
+        cursor.moveToFirst();
+        return cursor.getString(0).equals("1");
+
+    }
+
+    public String getTotalPrice() {
+        try {
+            /** Selecting whole column, iterate over it. And sum it up using loop */
+            cursor = sqLiteDatabase.rawQuery("SELECT " + COLUMN_6 + " FROM " + TABLE_NAME + ";", null);
+            int total = 0;
+            while (cursor.moveToNext()) {
+                total = total + Integer.parseInt(cursor.getString(0));
+            }
+            return total + "";
+        } catch (CursorIndexOutOfBoundsException exception) {
+            return "0";
+        }
+    }
+
     public boolean insertData(String vendor_id, String product_id, String product_name, String product_quantity, String product_price, String product_total) {
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_1, vendor_id);
         contentValues.put(COLUMN_2, product_id);
@@ -95,7 +128,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean updateData(String vendor_id, String product_id, String product_name, String product_quantity, String product_price, String product_total) {
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_1, vendor_id);
         contentValues.put(COLUMN_2, product_id);
@@ -110,14 +142,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean deleteData(String product_id) {
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         int result = sqLiteDatabase.delete(TABLE_NAME, COLUMN_2 + "=?", new String[]{product_id});
         Log.d(TAG, "deleteData Result:" + result);
         return result == 0 ? false : true;
     }
 
     public boolean deleteTable(String vendor_id) {
-        SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         int result = sqLiteDatabase.delete(TABLE_NAME, COLUMN_1 + "=?", new String[]{vendor_id});
         Log.d(TAG, "deleteTable Result:" + result);
         return result == 0 ? false : true;
